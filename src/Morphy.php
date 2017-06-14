@@ -5,47 +5,31 @@ namespace SerginhoLD\Morphy;
  * Class Morphy
  * @package SerginhoLD\Morphy
  */
-class Morphy
+class Morphy implements MorphyInterface
 {
-    /** Единственное число */
-    const G_SINGULAR = 'ЕД';
-    
-    /** Множественное число */
-    const G_PLURAL = 'МН';
-    
-    /** Именительный падеж */
-    const G_CASE_NOMINATIVE = 'ИМ';
-    
-    /** Родительный падеж */
-    const G_CASE_GENITIVE = 'РД';
-    
-    /** Дательныйпадеж */
-    const G_CASE_DATIVE = 'ДТ';
-    
-    /** Винительный падеж */
-    const G_CASE_ACCUSATIVE = 'ВН';
-    
-    /** Творительный падеж */
-    const G_CASE_INSTRUMENTAL = 'ТВ';
-    
-    /** Предложный падеж */
-    const G_CASE_PREPOSITIONAL = 'ПР';
-    
     /** @var \phpMorphy */
     private $oPhpMorphy;
     
     /**
      * Morphy constructor.
      * @param array $options
-     * @param string $lang
      * @param string $dir
+     * @param string $lang
      */
-    public function __construct($options = array(), $lang = 'ru_RU', $dir = null)
+    public function __construct($options = array(), $dir = null, $lang = 'ru_RU')
     {
         if ($dir === null)
-            $dir = dirname(__DIR__) . '/dicts';
+            $dir = $this->getDefaultDir();
         
         $this->oPhpMorphy = new \phpMorphy($dir, $lang, $options);
+    }
+    
+    /**
+     * @return string
+     */
+    protected function getDefaultDir()
+    {
+        return dirname(__DIR__) . '/dicts';
     }
     
     /**
@@ -66,10 +50,11 @@ class Morphy
     {
         $word = mb_strtoupper($word, 'UTF-8');
         $options = (array)$options;
-        
         $arForms = $this->getPhpMorphy()->castFormByGramInfo($word, null, $options, true);
-        $newWord = isset($arForms[0]) ? $arForms[0] : null;
         
-        return ($convertMode === MB_CASE_UPPER) ? $newWord : mb_convert_case($newWord, $convertMode, 'UTF-8');
+        if (!isset($arForms[0]))
+            return null;
+        
+        return ($convertMode === MB_CASE_UPPER) ? $arForms[0] : mb_convert_case($arForms[0], $convertMode, 'UTF-8');
     }
 }
