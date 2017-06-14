@@ -4,6 +4,7 @@
 ```bash
 composer require serginhold/morphy
 ```
+[Словари](http://phpmorphy.sourceforge.net/dokuwiki/download)
 
 ## Пример
 ```php

@@ -1,7 +1,7 @@
 {
   "name": "serginhold/morphy",
-  "description": "",
-  "keywords": ["morphy", "ru"],
+  "description": "phpMorphy",
+  "keywords": ["morphy", "phpMorphy"],
   "license": "MIT",
   "authors": [
     {
