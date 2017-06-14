@@ -1,0 +1,22 @@
+{
+  "name": "serginhold/morphy",
+  "description": "",
+  "keywords": ["morphy", "ru"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Sergey Zubrilin",
+      "homepage": "http://serginhold.ru"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "SerginhoLD\\Morphy\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=5.4.0",
+    "ext-mbstring": "*",
+    "umisoft/phpmorphy": "1.0.1"
+  }
+}
