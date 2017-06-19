@@ -1,7 +1,7 @@
 {
   "name": "serginhold/morphy",
-  "description": "phpMorphy",
-  "keywords": ["morphy", "phpMorphy"],
+  "description": "Обертка для phpMorphy",
+  "keywords": ["phpMorphy", "morphology", "морфология"],
   "license": "MIT",
   "authors": [
     {
@@ -11,7 +11,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "SerginhoLD\\Morphy\\": "src/lib/"
+      "SerginhoLD\\Morphy\\": "src/"
     }
   },
   "require": {

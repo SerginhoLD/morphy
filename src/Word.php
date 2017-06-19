@@ -112,7 +112,7 @@ class Word
      */
     public function isSingular()
     {
-        return in_array(MORPHY_RG_SINGULAR, $this->getGrammers(), true);
+        return in_array($this->getMorphy()::G_SINGULAR, $this->getGrammers(), true);
     }
     
     /**
@@ -120,7 +120,7 @@ class Word
      */
     public function isPlural()
     {
-        return in_array(MORPHY_RG_PLURAL, $this->getGrammers(), true);
+        return in_array($this->getMorphy()::G_PLURAL, $this->getGrammers(), true);
     }
     
     /**
@@ -128,7 +128,7 @@ class Word
      */
     public function isAnimated()
     {
-        return in_array(MORPHY_RG_ANIMATIVE, $this->getGrammers(), true);
+        return in_array($this->getMorphy()::G_ANIMATE, $this->getGrammers(), true);
     }
     
     /**
@@ -136,12 +136,7 @@ class Word
      */
     public function getGender()
     {
-        $arGender = [
-            MORPHY_RG_MASCULINUM,
-            MORPHY_RG_FEMINUM,
-            MORPHY_RG_NEUTRUM,
-            MORPHY_RG_MASC_FEM,
-        ];
+        $arGender = $this->getMorphy()::G_GENDER_LIST;
         
         $arGrammers =  array_values(array_filter($this->getGrammers(), function ($gender) use ($arGender) {
             return in_array($gender, $arGender, true);
@@ -155,14 +150,7 @@ class Word
      */
     public function getCase()
     {
-        $arCases = [
-            MORPHY_RG_NOMINATIV,
-            MORPHY_RG_GENITIV,
-            MORPHY_RG_DATIV,
-            MORPHY_RG_ACCUSATIV,
-            MORPHY_RG_INSTRUMENTALIS,
-            MORPHY_RG_LOCATIV,
-        ];
+        $arCases = $this->getMorphy()::G_CASE_LIST;
         
         return array_values(array_filter($this->getGrammers(), function ($case) use ($arCases) {
             return in_array($case, $arCases, true);
@@ -174,23 +162,7 @@ class Word
      */
     public function getSemanticFeature()
     {
-        $arFeatures = [
-            MORPHY_RG_NAME,
-            MORPHY_RG_SUR_NAME,
-            MORPHY_RG_PATRONYMIC,
-            MORPHY_RG_TOPONYM,
-            MORPHY_RG_INITIALISM,
-            MORPHY_RG_ORGANISATION,
-            MORPHY_RG_INTERROGATIVE,
-            MORPHY_RG_DEMONSTRATIVE,
-            MORPHY_RG_SLANG,
-            MORPHY_RG_COLLOQUIAL,
-            MORPHY_RG_ARCHAISM,
-            MORPHY_RG_MISPRINT,
-            MORPHY_RG_POETRY,
-            MORPHY_RG_PROFESSION,
-            //MORPHY_RG_POSITIVE,
-        ];
+        $arFeatures = $this->getMorphy()::G_SF_LIST;
         
         $arGrammers = array_values(array_filter($this->getGrammers(), function ($feature) use ($arFeatures) {
             return in_array($feature, $arFeatures, true);
@@ -209,24 +181,26 @@ class Word
         $grammers = (array)$grammers;
         $oWord = $this;
         
-        if (empty(array_intersect($grammers, Grammers::getGenderList())))
+        if (empty(array_intersect($grammers, $this->getMorphy()::G_GENDER_LIST)))
             $grammers = array_merge($grammers, (array)$oWord->getGender());
         
-        if (empty(array_intersect($grammers, Grammers::getCases())))
+        if (empty(array_intersect($grammers, $this->getMorphy()::G_CASE_LIST)))
             $grammers = array_merge($grammers, (array)$oWord->getCase());
         
-        if (empty(array_intersect($grammers, Grammers::getSemanticFeatures())))
+        if (empty(array_intersect($grammers, $this->getMorphy()::G_SF_LIST)))
             $grammers = array_merge($grammers, (array)$oWord->getSemanticFeature());
         
-        if (empty(array_intersect($grammers, [MORPHY_RG_SINGULAR, MORPHY_RG_PLURAL])))
-            $grammers[] = $oWord->isSingular() ? MORPHY_RG_SINGULAR : MORPHY_RG_PLURAL;
+        $SINGULAR = $this->getMorphy()::G_SINGULAR;
+        $PLURAL = $this->getMorphy()::G_PLURAL;
+        
+        if (empty(array_intersect($grammers, [$SINGULAR, $PLURAL])))
+            $grammers[] = $oWord->isSingular() ? $SINGULAR : $PLURAL;
         
         $arForms = $this->getPhpMorphy()->castFormByGramInfo($oWord->getWord(), null, $grammers, false);
         
         if (empty($arForms))
             return null;//var_dump($arForms);
         
-        //$newWord = & $arForms[count($arForms) - 1]; // TODO: край => [краю, крае], возможно нужен словать исключений, или без MORPHY_RG_SECOND_CASE, еще косяк с Санкт-Петербург, заплатка ниже через foreach
         $arFormWord = $arForms[0];
         
         if (count($arForms) > 1)
